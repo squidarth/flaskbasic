@@ -1,6 +1,7 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 from database import db_session
 import requests
+from models import BlogPost
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
@@ -31,6 +32,15 @@ def search_github(query):
   response_dict = requests.get(url).json()
   return response_dict["total_count"]
 
+@app.route("/create-post", methods=["POST"])
+def create_post():
+  post = BlogPost(title=request.form["title"], 
+                  content=request.form["content"])
+  db_session.add(post)
+  db_session.commit()
+  print(request.form["title"])
+  print(request.form["content"])
+  return "Was successful"
 
 if __name__ == "__main__":
       app.run(host="0.0.0.0")
