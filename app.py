@@ -10,6 +10,16 @@ app.config["DEBUG"] = True
 def shutdown_session(exception=None):
       db_session.remove()
 
+@app.route("/posts")
+def posts():
+  blog_posts = BlogPost.query.all()
+  return render_template("posts.html", posts=blog_posts)
+
+@app.route("/post/<post_id>")
+def post(post_id):
+  blog_post = BlogPost.query.filter_by(id=post_id).first()
+  return render_template("post.html", post=blog_post)
+
 @app.route("/")
 def hello():
       return render_template("hello.html")
